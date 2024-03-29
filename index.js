@@ -1,46 +1,9 @@
-class Functions {
-  randomNumber(countOfNumbers) {
-    return Math.floor(Math.random() * countOfNumbers);
-  }
-  compareTiles(mapTile, structureTile) {
-    return mapTile.tileX === structureTile.tileX && mapTile.tileY === structureTile.tileY;
-  }
-  findObjFromArrByCoordinates(arr, x, y) {
-    // you must remember coordinates are always must be like tileX and tileY keys
-    const obj = arr.find((obj) => obj.tileX === x && obj.tileY === y);
-    const index = arr.findIndex((obj) => obj.tileX === x && obj.tileY === y);
-    return {
-      ...obj,
-      index,
-    };
-  }
-  randomCoordinatesForRoads(xy, count) {
-    // xy here is vector (x or y)
-    console.log(count);
-    let arr = [];
-    for (let index = 0; index < count; index++) {
-      let value;
-      if (xy == 'x') {
-        do {
-          value = this.randomNumber(100);
-        } while (value > this.maxX || arr.includes(value));
-      }
-      if (xy == 'y') {
-        do {
-          value = this.randomNumber(100);
-        } while (value > this.maxY || arr.includes(value));
-      }
+import { Functions } from './features/common.js';
 
-      arr.push(value);
-    }
-    return arr;
-  }
-}
-
-class Game extends Functions {
+export class Game extends Functions {
   constructor() {
     super();
-    this.map = [];
+    this.map = []; // map with coordinates, BUT also for-final-render stuff, it means it will contain structures, roads, stuff etc
     this.structures = [];
     this.roads = [];
     // here you can control size of map
@@ -52,7 +15,7 @@ class Game extends Functions {
   }
 }
 
-// order of functions exection
+// order of functions ezxection
 // generateTerrain => renderMap => generateStructures => renderMap
 class ProceduralGeneration extends Game {
   constructor() {
@@ -64,16 +27,9 @@ class ProceduralGeneration extends Game {
     // control roads
     this.countOfHorizontalRoadsX = { min: 3, max: 8 };
     this.countOfVerticalRoadsY = { min: 3, max: 8 };
-  }
-  // creates obj-array for creating '
-  generateTerrain() {
-    for (let y_index = 0; y_index <= this.maxY; y_index++) {
-      for (let x_index = 0; x_index <= this.maxX; x_index++) {
-        this.map.push({ tileY: y_index, tileX: x_index, tileType: 'tile' });
-      }
-    }
-
-    this.renderMap();
+    // control stuff
+    this.countOfPoisons = 10;
+    this.countOfSwords = 2;
   }
 
   // rendering map, structures and stuff
@@ -88,10 +44,27 @@ class ProceduralGeneration extends Game {
       // UI control of postition of map-tiles
       newTile.style = `left: ${tile.tileX * 50}px; top: ${tile.tileY * 50}px;`;
 
+      if (tile.tileType == 'tileHP') {
+        console.log('it works');
+      }
       field.append(newTile);
     });
 
     this.structures.length <= 0 && this.generateStructures(); // generating structures
+  }
+
+  // creates obj-array for creating '
+  generateTerrain() {
+    for (let y_index = 0; y_index <= this.maxY; y_index++) {
+      for (let x_index = 0; x_index <= this.maxX; x_index++) {
+        this.map.push({ tileY: y_index, tileX: x_index, tileType: 'tile' });
+      }
+    }
+
+    this.generateStructures();
+    this.generateRoads();
+    this.generateStuff();
+    this.renderMap();
   }
 
   generateStructures() {
@@ -148,9 +121,6 @@ class ProceduralGeneration extends Game {
         }
       });
     });
-
-    this.generateRoads();
-    this.renderMap();
   }
 
   generateRoads() {
@@ -223,9 +193,38 @@ class ProceduralGeneration extends Game {
         y_coordinate,
         this.maxX,
       );
-      console.log(selectedObjWithIndex);
       if (selectedObjWithIndex.index !== -1) {
         this.map[selectedObjWithIndex.index].tileType = 'tile';
+      }
+    });
+  }
+
+  generateStuff() {
+    // these both returns coordinates, tileType and index of changeble obj in map!!!
+    const poisonsArray = this.randomCoordinatesOnEmptyTile(
+      this.map,
+      this.countOfPoisons,
+      'tileHP',
+      this.maxX,
+      this.maxY,
+    );
+    const swordsArray = this.randomCoordinatesOnEmptyTile(
+      this.map,
+      this.countOfSwords,
+      'tileSW',
+      this.maxX,
+      this.maxY,
+    );
+
+    // render em
+    poisonsArray.map((poison) => {
+      if (poison.index !== 1) {
+        this.map[poison.index].tileType = poison.tileType;
+      }
+    });
+    swordsArray.map((sword) => {
+      if (sword.index !== 1) {
+        this.map[sword.index].tileType = sword.tileType;
       }
     });
   }
