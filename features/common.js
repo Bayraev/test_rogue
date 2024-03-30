@@ -64,4 +64,8 @@ export class Functions {
 
     return coordinates;
   }
+
+  autoScrollToEntity(field, entity, maxX, maxY) {
+    field.scrollTo(entity.tileX * maxX, entity.tileY * maxY);
+  }
 }
