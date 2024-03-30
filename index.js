@@ -3,23 +3,29 @@ import { Functions } from './features/common.js';
 export class Game extends Functions {
   constructor() {
     super();
+    // units on the map
+    this.mainHero = [];
+    // world
     this.map = []; // map with coordinates, BUT also for-final-render stuff, it means it will contain structures, roads, stuff etc
     this.structures = [];
-    this.roads = [];
     // here you can control size of map
     this.maxY = 24;
     this.maxX = 40;
   }
-  init() {
-    new ProceduralGeneration().generateTerrain();
+  init(Character) {
+    new ProceduralGeneration(this).generateTerrain();
+
+    const char = new Character(this);
+    char.init();
   }
 }
 
 // order of functions ezxection
 // generateTerrain => renderMap => generateStructures => renderMap
 class ProceduralGeneration extends Game {
-  constructor() {
+  constructor(gameInstance) {
     super();
+    this.game = gameInstance;
     // control walls
     this.countOfWalls = 10 * 2;
     this.maxWidthOfWall = { min: 3, max: 10 };
@@ -37,27 +43,24 @@ class ProceduralGeneration extends Game {
     let field = document.querySelector('.field');
     field.innerHTML = '';
 
-    this.map.forEach((tile) => {
+    this.game.map.forEach((tile) => {
       let newTile = document.createElement('div');
       // choose type of tile
       newTile.className = tile.tileType;
       // UI control of postition of map-tiles
       newTile.style = `left: ${tile.tileX * 50}px; top: ${tile.tileY * 50}px;`;
 
-      if (tile.tileType == 'tileHP') {
-        console.log('it works');
-      }
       field.append(newTile);
     });
 
-    this.structures.length <= 0 && this.generateStructures(); // generating structures
+    this.game.structures.length <= 0 && this.generateStructures(); // generating structures
   }
 
   // creates obj-array for creating '
   generateTerrain() {
     for (let y_index = 0; y_index <= this.maxY; y_index++) {
       for (let x_index = 0; x_index <= this.maxX; x_index++) {
-        this.map.push({ tileY: y_index, tileX: x_index, tileType: 'tile' });
+        this.game.map.push({ tileY: y_index, tileX: x_index, tileType: 'tile' });
       }
     }
 
@@ -65,6 +68,7 @@ class ProceduralGeneration extends Game {
     this.generateRoads();
     this.generateStuff();
     this.renderMap();
+    console.log(this.mainHero);
   }
 
   generateStructures() {
@@ -91,12 +95,12 @@ class ProceduralGeneration extends Game {
         height = this.randomNumber(10);
       } while (height < this.maxHeightOfWall.min || height > this.maxHeightOfWall.max);
 
-      this.structures.push({ tileX, tileY, width, height, tileType: 'tileW' });
+      this.game.structures.push({ tileX, tileY, width, height, tileType: 'tileW' });
     }
 
     // mappin them for comparing
-    this.map.forEach((mapTile) => {
-      this.structures.forEach((structureTile) => {
+    this.game.map.forEach((mapTile) => {
+      this.game.structures.forEach((structureTile) => {
         if (this.compareTiles(mapTile, structureTile)) {
           mapTile.tileType = structureTile.tileType;
 
@@ -107,14 +111,14 @@ class ProceduralGeneration extends Game {
               // finding index of selected coordinate-obj according comparable data
 
               const selectedObjWithIndex = this.findObjFromArrByCoordinates(
-                this.map,
+                this.game.map,
                 mapTile.tileX + x_index,
                 mapTile.tileY + y_index,
               );
 
               // just changing every tile cuz we have indexex of all of them
               if (selectedObjWithIndex.index !== -1) {
-                this.map[selectedObjWithIndex.index].tileType = structureTile.tileType;
+                this.game.map[selectedObjWithIndex.index].tileType = structureTile.tileType;
               }
             }
           }
@@ -152,24 +156,24 @@ class ProceduralGeneration extends Game {
       for (let y_coordinate = 0; y_coordinate < this.maxY; y_coordinate++) {
         // so bcs we iterate XY, we get all coordinates thats corresponds our "request"
         let selectedObjWithIndex = this.findObjFromArrByCoordinates(
-          this.map,
+          this.game.map,
           x_coordinate,
           y_coordinate,
         );
         // and then we edit it using index of obj we must update
         if (selectedObjWithIndex.index !== -1) {
-          this.map[selectedObjWithIndex.index].tileType = 'tile';
+          this.game.map[selectedObjWithIndex.index].tileType = 'tile';
         }
       }
       // next code because it doest change tile of last Y coordinate  with some reason
       let selectedObjWithIndex = this.findObjFromArrByCoordinates(
-        this.map,
+        this.game.map,
         x_coordinate,
         this.maxY,
       );
 
       if (selectedObjWithIndex.index !== -1) {
-        this.map[selectedObjWithIndex.index].tileType = 'tile';
+        this.game.map[selectedObjWithIndex.index].tileType = 'tile';
       }
     });
 
@@ -178,23 +182,23 @@ class ProceduralGeneration extends Game {
       for (let x_coordinate = 0; x_coordinate < this.maxX; x_coordinate++) {
         // so bcs we iterate XY, we get all coordinates thats corresponds our "request"
         let selectedObjWithIndex = this.findObjFromArrByCoordinates(
-          this.map,
+          this.game.map,
           x_coordinate,
           y_coordinate,
         );
         // and then we edit it using index of obj we must update
         if (selectedObjWithIndex.index !== -1) {
-          this.map[selectedObjWithIndex.index].tileType = 'tile';
+          this.game.map[selectedObjWithIndex.index].tileType = 'tile';
         }
       }
       // next code because it doest change tile of last Y coordinate  with some reason
       let selectedObjWithIndex = this.findObjFromArrByCoordinates(
-        this.map,
+        this.game.map,
         y_coordinate,
         this.maxX,
       );
       if (selectedObjWithIndex.index !== -1) {
-        this.map[selectedObjWithIndex.index].tileType = 'tile';
+        this.game.map[selectedObjWithIndex.index].tileType = 'tile';
       }
     });
   }
@@ -202,14 +206,14 @@ class ProceduralGeneration extends Game {
   generateStuff() {
     // these both returns coordinates, tileType and index of changeble obj in map!!!
     const poisonsArray = this.randomCoordinatesOnEmptyTile(
-      this.map,
+      this.game.map,
       this.countOfPoisons,
       'tileHP',
       this.maxX,
       this.maxY,
     );
     const swordsArray = this.randomCoordinatesOnEmptyTile(
-      this.map,
+      this.game.map,
       this.countOfSwords,
       'tileSW',
       this.maxX,
@@ -219,12 +223,12 @@ class ProceduralGeneration extends Game {
     // render em
     poisonsArray.map((poison) => {
       if (poison.index !== 1) {
-        this.map[poison.index].tileType = poison.tileType;
+        this.game.map[poison.index].tileType = poison.tileType;
       }
     });
     swordsArray.map((sword) => {
       if (sword.index !== 1) {
-        this.map[sword.index].tileType = sword.tileType;
+        this.game.map[sword.index].tileType = sword.tileType;
       }
     });
   }

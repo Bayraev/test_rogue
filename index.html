@@ -20,12 +20,12 @@
       href="https://fonts.googleapis.com/css?family=Playfair+Display:400,400i|Tinos:400,400i&amp;subset=cyrillic"
       rel="stylesheet"
     />
-    <script
+    <!-- <script
       type="text/javascript"
       src="/shared/3rdparty/jquery/jquery.js"
       language="javascript1.1"
-    ></script>
-    <script src="index.js"></script>
+    ></script> -->
+
     <style>
       * {
         box-sizing: border-box;
@@ -58,7 +58,11 @@
       }
 
       .field .tile,
-      .tileW {
+      .tileW,
+      .tileE,
+      .tileP,
+      .tileHP,
+      .tileSW {
         position: absolute;
         width: 50px;
         height: 50px;
@@ -129,9 +133,12 @@
     <!--h1>Инвентарь</h1>
 		<div-- class="inventory-box"><div class="inventory"></div></div-->
 
-    <script>
+    <script type="module">
+      import { Game } from './index.js';
+      import { Character } from './features/creatures.js';
+
       var game = new Game();
-      game.init();
+      game.init(Character);
     </script>
   </body>
 </html>
