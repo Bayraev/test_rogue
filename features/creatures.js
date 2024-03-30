@@ -18,7 +18,11 @@ class Entity extends Functions {
   spawnEntity(entityInfo, tileType) {
     let field = document.querySelector('.field');
     let charElem = document.createElement('div');
+    let hpBarElem = document.createElement('span');
 
+    hpBarElem.textContent = 10;
+    hpBarElem.className = 'health';
+    charElem.prepend(hpBarElem);
     // choose tyleType
     charElem.className = tileType;
     // UI position
@@ -61,19 +65,15 @@ export class Character extends Entity {
     document.addEventListener('keydown', function (event) {
       // Check if the pressed key is 'W', 'A', 'S', or 'D'
       if (event.key === 'w' || event.key === 'W' || event.key === 'ц' || event.key === 'Ц') {
-        console.log('Key W pressed');
         self.move('top');
         // Your action for 'W' key press goes here
       } else if (event.key === 'a' || event.key === 'A' || event.key === 'ф' || event.key === 'Ф') {
-        console.log('Key A pressed');
         self.move('left');
         // Your action for 'A' key press goes here
       } else if (event.key === 's' || event.key === 'S' || event.key === 'ы' || event.key === 'Ы') {
-        console.log('Key S pressed');
         self.move('bottom');
         // Your action for 'S' key press goes here
       } else if (event.key === 'd' || event.key === 'D' || event.key === 'в' || event.key === 'В') {
-        console.log('Key D pressed');
         self.move('right');
         // Your action for 'D' key press goes here
       }
@@ -81,33 +81,50 @@ export class Character extends Entity {
   }
 
   move(direction) {
-    if (direction == 'top') {
-      const entityElem = document.querySelector('.tileP');
-      this.coordinates.y--;
-      entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
-    }
-    if (direction == 'bottom') {
-      const entityElem = document.querySelector('.tileP');
-      this.coordinates.y++;
-      entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
-    }
-    if (direction == 'right') {
-      const entityElem = document.querySelector('.tileP');
-      this.coordinates.x++;
-      entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
-    }
-    if (direction == 'left') {
-      const entityElem = document.querySelector('.tileP');
-      this.coordinates.x--;
-      entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
+    let newX = this.coordinates.x;
+    let newY = this.coordinates.y;
+
+    switch (direction) {
+      case 'top':
+        newY--;
+        break;
+      case 'bottom':
+        newY++;
+        break;
+      case 'right':
+        newX++;
+        break;
+      case 'left':
+        newX--;
+        break;
+      default:
+        return; // Invalid direction
     }
 
-    const field = document.querySelector('.field');
-    this.autoScrollToEntity(
-      field,
-      { ...this.entityInfo, tileX: this.coordinates.x, tileY: this.coordinates.y },
-      this.entityInfo.maxX,
-      this.entityInfo.maxY,
-    );
+    const comparable = this.findObjFromArrByCoordinates(this.game.map, newX, newY);
+
+    switch (comparable.tileType) {
+      case 'tile':
+        const entityElem = document.querySelector('.tileP');
+        this.coordinates.x = newX;
+        this.coordinates.y = newY;
+        entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
+
+        const field = document.querySelector('.field');
+        this.autoScrollToEntity(
+          field,
+          { ...this.entityInfo, tileX: this.coordinates.x, tileY: this.coordinates.y },
+          this.entityInfo.maxX,
+          this.entityInfo.maxY,
+        );
+        break;
+
+      case 'tileHP':
+        this.game.map[comparable.index].tileType = 'tile';
+        break;
+
+      default:
+        break;
+    }
   }
 }
