@@ -43,10 +43,12 @@ class ProceduralGeneration extends Game {
     let field = document.querySelector('.field');
     field.innerHTML = '';
 
-    this.game.map.forEach((tile) => {
+    this.game.map.forEach((tile, index) => {
       let newTile = document.createElement('div');
       // choose type of tile
       newTile.className = tile.tileType;
+      // giving it stuff like key
+      newTile.id = tile.tileType + index;
       // UI control of postition of map-tiles
       newTile.style = `left: ${tile.tileX * 50}px; top: ${tile.tileY * 50}px;`;
 
@@ -60,7 +62,12 @@ class ProceduralGeneration extends Game {
   generateTerrain() {
     for (let y_index = 0; y_index <= this.maxY; y_index++) {
       for (let x_index = 0; x_index <= this.maxX; x_index++) {
-        this.game.map.push({ tileY: y_index, tileX: x_index, tileType: 'tile' });
+        this.game.map.push({
+          tileY: y_index,
+          tileX: x_index,
+          tileType: 'tile',
+          src: 'images/tile-.png',
+        });
       }
     }
 
@@ -68,7 +75,9 @@ class ProceduralGeneration extends Game {
     this.generateRoads();
     this.generateStuff();
     this.renderMap();
-    console.log(this.mainHero);
+
+    console.log(this.game.mainHero);
+    console.log(this.game.map);
   }
 
   generateStructures() {
@@ -95,7 +104,14 @@ class ProceduralGeneration extends Game {
         height = this.randomNumber(10);
       } while (height < this.maxHeightOfWall.min || height > this.maxHeightOfWall.max);
 
-      this.game.structures.push({ tileX, tileY, width, height, tileType: 'tileW' });
+      this.game.structures.push({
+        tileX,
+        tileY,
+        width,
+        height,
+        tileType: 'tileW',
+        src: 'images/tile-W.png',
+      });
     }
 
     // mappin them for comparing
@@ -119,6 +135,7 @@ class ProceduralGeneration extends Game {
               // just changing every tile cuz we have indexex of all of them
               if (selectedObjWithIndex.index !== -1) {
                 this.game.map[selectedObjWithIndex.index].tileType = structureTile.tileType;
+                this.game.map[selectedObjWithIndex.index].src = 'images/tile-W.png';
               }
             }
           }
@@ -220,15 +237,17 @@ class ProceduralGeneration extends Game {
       this.maxY,
     );
 
-    // render em
+    // edit pre-render map
     poisonsArray.map((poison) => {
       if (poison.index !== 1) {
         this.game.map[poison.index].tileType = poison.tileType;
+        this.game.map[poison.index].src = 'images/tile-HP.png';
       }
     });
     swordsArray.map((sword) => {
       if (sword.index !== 1) {
         this.game.map[sword.index].tileType = sword.tileType;
+        this.game.map[sword.index].src = 'images/tile-SW.png';
       }
     });
   }
