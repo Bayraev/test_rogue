@@ -38,7 +38,6 @@ export class Functions {
   randomCoordinatesOnEmptyTile(map, count, tileType, maxX, maxY) {
     // this func used to return tile with {tileType: 'tile'}
     // because stuff can spawn only on free tile
-    console.log('map', count, tileType, maxX, maxY);
     let coordinates = [];
     for (let index = 0; index < count; index++) {
       let x_coordinate = this.randomNumber(100);
