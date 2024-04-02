@@ -16,7 +16,6 @@ export class Functions {
   }
   randomCoordinatesForRoads(xy, count) {
     // xy here is vector (x or y)
-    console.log(count);
     let arr = [];
     for (let index = 0; index < count; index++) {
       let value;
