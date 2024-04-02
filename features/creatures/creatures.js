@@ -1,12 +1,10 @@
-import { Game } from '../index.js';
-import { Functions } from './common.js';
+import { Game } from '../../index.js';
+import { Functions } from '../common.js';
 
 class Entity extends Functions {
   constructor() {
     super();
     // name must be a uid of living entities
-    this.name = null;
-    this.tileType = null;
     this.hp = 10;
     this.atc = 1;
     this.coordinates = {
@@ -261,5 +259,36 @@ export class Character extends Entity {
       default:
         break;
     }
+  }
+}
+
+export class Enemy extends Entity {
+  constructor(gameInstance) {
+    super();
+    this.game = gameInstance;
+
+    this.id = null; // num
+    this.tileType = 'tileE';
+    this.entityInfo = null;
+  }
+  init(id) {
+    // givin uid to enemy
+    this.id = id;
+    // gen start parameters to enemy
+    this.entityInfo = this.randomCoordinatesOnEmptyTile(
+      this.game.map,
+      1,
+      this.tileType,
+      this.game.maxX,
+      this.game.maxY,
+    )[0];
+    // Also pushing info about map size for some reason
+    this.entityInfo = { ...this.entityInfo, maxX: this.game.maxX, maxY: this.game.maxY };
+
+    this.coordinates = {
+      x: this.entityInfo.tileX,
+      y: this.entityInfo.tileY,
+    };
+    this.spawnEntity(this.entityInfo, this.tileType);
   }
 }

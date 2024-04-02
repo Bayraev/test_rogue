@@ -12,11 +12,16 @@ export class Game extends Functions {
     this.maxY = 24;
     this.maxX = 40;
   }
-  init(Character) {
+  init(Character, Enemy) {
     new ProceduralGeneration(this).generateTerrain();
 
-    const char = new Character(this);
+    let char = new Character(this);
+    let enemy = new Enemy(this);
     char.init();
+    for (let i = 0; i < 10; i++) {
+      // every enemy has its uid
+      enemy.init(i);
+    }
   }
 }
 
@@ -75,9 +80,6 @@ class ProceduralGeneration extends Game {
     this.generateRoads();
     this.generateStuff();
     this.renderMap();
-
-    console.log(this.game.mainHero);
-    console.log(this.game.map);
   }
 
   generateStructures() {

@@ -153,10 +153,11 @@
 
     <script type="module">
       import { Game } from './index.js';
-      import { Character } from './features/creatures.js';
+      import { Character } from './features/creatures/creatures.js';
+      import { Enemy } from './features/creatures/creatures.js';
 
       var game = new Game();
-      game.init(Character);
+      game.init(Character, Enemy);
     </script>
   </body>
 </html>
