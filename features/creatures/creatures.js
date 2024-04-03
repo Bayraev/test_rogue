@@ -16,10 +16,9 @@ export class Entity extends Functions {
   spawnEntity(entityInfo, GameEntitiesMap) {
     // entityInfo - data for spawn like type, coordinates, type
     // GameEntitiesMap - array with entities (exc hero)
-    if (entityInfo.tileType == 'tileE') {
-      // pushing enimies in game.entities via link
-      GameEntitiesMap.push(entityInfo);
-    }
+
+    // pushing enimies in game.entities via link
+    entityInfo.tileType == 'tileE' && GameEntitiesMap.push(entityInfo);
     let field = document.querySelector('.field');
 
     // hp Bar
@@ -31,7 +30,11 @@ export class Entity extends Functions {
     charElem.prepend(hpBarElem);
     // choose tyleType
     charElem.className = entityInfo.tileType;
-    charElem.id = entityInfo.tileType + entityInfo.id;
+    // tileP have no id, but another entites have it
+    entityInfo.tileType == 'tileP'
+      ? (charElem.id = `${entityInfo.tileType}`)
+      : (charElem.id = `${entityInfo.tileType + entityInfo.id}`);
+
     // UI position
     charElem.style = `left: ${entityInfo.tileX * 50}px; top: ${entityInfo.tileY * 50}px;`;
     // scroll to main char

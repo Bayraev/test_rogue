@@ -17,7 +17,14 @@ export default class Character extends Entity {
       this.game.maxX,
       this.game.maxY,
     )[0];
-    this.entityInfo = { ...this.entityInfo, maxX: this.game.maxX, maxY: this.game.maxY };
+    this.entityInfo = {
+      ...this.entityInfo,
+      maxX: this.game.maxX,
+      maxY: this.game.maxY,
+      hp: this.hp,
+      atc: this.atc,
+      tileType: this.tileType,
+    };
 
     this.coordinates = {
       x: this.entityInfo.tileX,
