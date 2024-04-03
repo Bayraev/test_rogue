@@ -92,4 +92,11 @@ export class Functions {
 
     return arr;
   }
+
+  deleteObjFromArrById(entitiesMap, id) {
+    // deleting obj from arr.
+    // spread new arr in old one for no mutation!
+    const newArr = entitiesMap.filter((entity) => entity.id !== id);
+    return newArr;
+  }
 }
