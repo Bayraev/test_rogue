@@ -73,72 +73,84 @@ export default class Character extends Entity {
         return; // Invalid direction
     }
 
-    let comparable = this.findObjFromArrByCoordinates(this.game.map, newX, newY);
+    // one to compare with map and stuff, second for checking entities
+    let newCooordinatesMap = this.findObjFromArrByCoordinates(this.game.map, newX, newY);
+    let newCooordinatesEntities = this.findObjFromArrByCoordinates(this.game.entities, newX, newY);
 
-    switch (comparable.tileType) {
-      case 'tile':
-        const entityElem = document.querySelector('.tileP');
-        this.coordinates.x = newX;
-        this.coordinates.y = newY;
-        entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${this.coordinates.y * 50}px;`;
+    if (newCooordinatesEntities.index == -1) {
+      switch (newCooordinatesMap.tileType) {
+        case 'tile':
+          const entityElem = document.querySelector('.tileP');
+          this.coordinates.x = newX;
+          this.coordinates.y = newY;
+          entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${
+            this.coordinates.y * 50
+          }px;`;
 
-        this.autoScrollToEntity(
-          field,
-          { ...this.entityInfo, tileX: this.coordinates.x, tileY: this.coordinates.y },
-          this.entityInfo.maxX,
-          this.entityInfo.maxY,
-        );
-        break;
+          this.autoScrollToEntity(
+            field,
+            { ...this.entityInfo, tileX: this.coordinates.x, tileY: this.coordinates.y },
+            this.entityInfo.maxX,
+            this.entityInfo.maxY,
+          );
+          break;
 
-      case 'tileHP':
-        // old elem with HP
-        const selectedHpElem = document.getElementById(`${comparable.tileType + comparable.index}`);
-        const parentHp = selectedHpElem.parentNode;
-        parentHp.removeChild(selectedHpElem);
+        case 'tileHP':
+          // old elem with HP
+          const selectedHpElem = document.getElementById(
+            `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
+          );
+          const parentHp = selectedHpElem.parentNode;
+          parentHp.removeChild(selectedHpElem);
 
-        // change pre-render map (but dont call render, cuz it finds by id above and change)
-        this.game.map[comparable.index].tileType = 'tile';
+          // change pre-render map (but dont call render, cuz it finds by id above and change)
+          this.game.map[newCooordinatesMap.index].tileType = 'tile';
 
-        // replace it with new tile
-        let newTileHp = document.createElement('div');
-        // choose type of tile
-        newTileHp.className = 'tile';
-        // giving it stuff like key
-        newTileHp.id = 'tileHP' + comparable.index;
-        // UI control of postition of map-tiles
-        newTileHp.style = `left: ${comparable.tileX * 50}px; top: ${comparable.tileY * 50}px;`;
+          // replace it with new tile
+          let newTileHp = document.createElement('div');
+          // choose type of tile
+          newTileHp.className = 'tile';
+          // giving it stuff like key
+          newTileHp.id = 'tileHP' + newCooordinatesMap.index;
+          // UI control of postition of map-tiles
+          newTileHp.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
+            newCooordinatesMap.tileY * 50
+          }px;`;
 
-        field.append(newTileHp);
+          field.append(newTileHp);
 
-        this.interactInventory('add', comparable);
-        break;
+          this.interactInventory('add', newCooordinatesMap);
+          break;
 
-      case 'tileSW':
-        // old elem with HP
-        const selectedSwordElem = document.getElementById(
-          `${comparable.tileType + comparable.index}`,
-        );
-        const parentSword = selectedSwordElem.parentNode;
-        parentSword.removeChild(selectedSwordElem);
+        case 'tileSW':
+          // old elem with HP
+          const selectedSwordElem = document.getElementById(
+            `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
+          );
+          const parentSword = selectedSwordElem.parentNode;
+          parentSword.removeChild(selectedSwordElem);
 
-        // change pre-render map (but dont call render, cuz it finds by id above and change)
-        this.game.map[comparable.index].tileType = 'tile';
+          // change pre-render map (but dont call render, cuz it finds by id above and change)
+          this.game.map[newCooordinatesMap.index].tileType = 'tile';
 
-        // replace it with new tile
-        let newTileSword = document.createElement('div');
-        // choose type of tile
-        newTileSword.className = 'tile';
-        // giving it stuff like key
-        newTileSword.id = 'tileHP' + comparable.index;
-        // UI control of postition of map-tiles
-        newTileSword.style = `left: ${comparable.tileX * 50}px; top: ${comparable.tileY * 50}px;`;
-        field.append(newTileSword);
+          // replace it with new tile
+          let newTileSword = document.createElement('div');
+          // choose type of tile
+          newTileSword.className = 'tile';
+          // giving it stuff like key
+          newTileSword.id = 'tileHP' + newCooordinatesMap.index;
+          // UI control of postition of map-tiles
+          newTileSword.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
+            newCooordinatesMap.tileY * 50
+          }px;`;
+          field.append(newTileSword);
 
-        this.interactInventory('add', comparable);
-        break;
+          this.interactInventory('add', newCooordinatesMap);
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
   }
 
@@ -230,7 +242,11 @@ export default class Character extends Entity {
         newHpBarElem.className = 'health';
         entityElem.prepend(newHpBarElem);
 
-        if (actualEnemy.hp <= 0) parentEntity.removeChild(entityElem);
+        if (actualEnemy.hp <= 0) {
+          parentEntity.removeChild(entityElem);
+          const newEntites = this.deleteObjFromArrById(this.game.entities, enemy.id);
+          this.game.entities = [...newEntites];
+        }
       }
     });
   }
