@@ -5,6 +5,7 @@ export class Game extends Functions {
     super();
     // units on the map
     this.mainHero = [];
+    this.entities = [];
     // world
     this.map = []; // map with coordinates, BUT also for-final-render stuff, it means it will contain structures, roads, stuff etc
     this.structures = [];

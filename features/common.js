@@ -66,4 +66,30 @@ export class Functions {
   autoScrollToEntity(field, entity, maxX, maxY) {
     field.scrollTo(entity.tileX * maxX, entity.tileY * maxY);
   }
+
+  entityAround(entitiesArr, coordinates) {
+    // returns array of coordinates of entities around
+    let arr = [];
+    // topLeft
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x - 1, coordinates.y - 1));
+    // top
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x, coordinates.y - 1));
+    // topRight
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x + 1, coordinates.y - 1));
+
+    // right
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x + 1, coordinates.y));
+
+    // bottomRight
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x + 1, coordinates.y + 1));
+    // bottom
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x, coordinates.y + 1));
+    // bottomLeft
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x - 1, coordinates.y + 1));
+
+    // left
+    arr.push(this.findObjFromArrByCoordinates(entitiesArr, coordinates.x - 1, coordinates.y));
+
+    return arr;
+  }
 }

@@ -153,11 +153,12 @@
 
     <script type="module">
       import { Game } from './index.js';
-      import { Character } from './features/creatures/creatures.js';
-      import { Enemy } from './features/creatures/creatures.js';
+      import Character from './features/creatures/Character.js';
+      import Enemy from './features/creatures/Enemy.js';
 
       var game = new Game();
       game.init(Character, Enemy);
+      // hp render separete
     </script>
   </body>
 </html>
