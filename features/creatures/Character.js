@@ -210,7 +210,7 @@ export default class Character extends Entity {
       if (enemy.index !== -1) {
         // damage according hero atc
         this.game.entities[enemy.index].hp = enemy.hp - this.atc;
-
+        const actualEnemy = this.game.entities[enemy.index];
         // rerender enemy
         let entityElem = document.getElementById(`${enemy.tileType + enemy.id}`);
         let parentEntity = entityElem.parentNode;
@@ -219,11 +219,11 @@ export default class Character extends Entity {
         entityElem.removeChild(hpBarElem);
 
         let newHpBarElem = document.createElement('span');
-        newHpBarElem.textContent = enemy.hp;
+        newHpBarElem.textContent = actualEnemy.hp;
         newHpBarElem.className = 'health';
         entityElem.prepend(newHpBarElem);
 
-        if (enemy.hp <= 0) parentEntity.removeChild(entityElem);
+        if (actualEnemy.hp <= 0) parentEntity.removeChild(entityElem);
       }
     });
   }
