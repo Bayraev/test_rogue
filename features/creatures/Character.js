@@ -194,7 +194,10 @@ export default class Character extends Entity {
 
         if (tile.tileType == 'tileHP') {
           // change data in instance
+          const heroFomEntitiesArr = this.findObjFromArrById(this.game.entities, this.id);
           this.hp = this.hp + 5;
+          this.game.entities[heroFomEntitiesArr.index].hp = this.hp;
+
           // player hp from bar
           let charElem = document.querySelector('.tileP');
           let hpBarElem = charElem.childNodes[0];
