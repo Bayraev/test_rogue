@@ -158,6 +158,16 @@ export default class Enemy extends Entity {
       newHpBarElem.className = 'health';
       characterElem.prepend(newHpBarElem);
 
+      // upd player hp from inventory
+      let hpInventoryElem = document.querySelector('.hpInventory');
+      let parentInventoryData = hpInventoryElem.parentNode;
+      parentInventoryData.removeChild(hpInventoryElem);
+
+      let newHpInventoryElem = document.createElement('span');
+      newHpInventoryElem.className = 'hpInventory';
+      newHpInventoryElem.textContent = actualCharacter.hp;
+      parentInventoryData.append(newHpInventoryElem);
+
       if (actualCharacter.hp <= 0) {
         parentCharacter.removeChild(characterElem);
         const newEntities = this.deleteObjFromArrById(this.game.entities, characterToBeat.id);
