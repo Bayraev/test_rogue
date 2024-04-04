@@ -17,8 +17,10 @@ export class Entity extends Functions {
     // entityInfo - data for spawn like type, coordinates, type
     // GameEntitiesMap - array with entities (exc hero)
 
-    // pushing enimies in game.entities via link
+    // pushing entities in game.entities via link
     entityInfo.tileType == 'tileE' && GameEntitiesMap.push(entityInfo);
+    entityInfo.tileType == 'tileP' && GameEntitiesMap.push(entityInfo);
+
     let field = document.querySelector('.field');
 
     // hp Bar

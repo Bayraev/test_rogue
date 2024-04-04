@@ -10,6 +10,7 @@ export default class Character extends Entity {
     this.tileType = 'tileP';
   }
   init() {
+    // Information for spawn
     this.entityInfo = this.randomCoordinatesOnEmptyTile(
       this.game.map,
       1,
@@ -30,8 +31,10 @@ export default class Character extends Entity {
       x: this.entityInfo.tileX,
       y: this.entityInfo.tileY,
     };
-    this.spawnEntity(this.entityInfo);
+    // spawn
+    this.spawnEntity(this.entityInfo, this.game.entities);
 
+    // keyboard
     const self = this;
     const handleKeyboard = (event) => {
       // Check if the pressed key is 'W', 'A', 'S', or 'D'
@@ -53,6 +56,7 @@ export default class Character extends Entity {
   move(direction) {
     let field = document.querySelector('.field');
 
+    // defining new coordinate
     let newX = this.coordinates.x;
     let newY = this.coordinates.y;
 
