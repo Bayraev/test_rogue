@@ -8,9 +8,10 @@ export default class Character extends Entity {
 
     this.name = 'Hero';
     this.tileType = 'tileP';
+    this.id = 'tileP';
   }
   init() {
-    // Information for spawn
+    // Information for spawn and for entity arr
     this.entityInfo = this.randomCoordinatesOnEmptyTile(
       this.game.map,
       1,
@@ -25,6 +26,7 @@ export default class Character extends Entity {
       hp: this.hp,
       atc: this.atc,
       tileType: this.tileType,
+      id: this.id,
     };
 
     this.coordinates = {
@@ -87,6 +89,15 @@ export default class Character extends Entity {
           const entityElem = document.querySelector('.tileP');
           this.coordinates.x = newX;
           this.coordinates.y = newY;
+
+          // change info in entities arr for hero
+          const hero = this.findObjFromArrById(this.game.entities, 'tileP');
+          this.game.entities[hero.index] = {
+            ...hero,
+            tileX: this.coordinates.x,
+            tileY: this.coordinates.y,
+          };
+
           entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${
             this.coordinates.y * 50
           }px;`;
