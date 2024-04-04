@@ -66,7 +66,7 @@ export default class Enemy extends Entity {
           );
           comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
             ? this.move(enemyEntity, 1, 0)
-            : console.log('going right must attack');
+            : this.attack(comparableEntities);
         } else {
           // Y
           // npc going left
@@ -82,7 +82,7 @@ export default class Enemy extends Entity {
           );
           comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
             ? this.move(enemyEntity, -1, 0)
-            : console.log('going left must attack');
+            : this.attack(comparableEntities);
         }
       } else {
         if (distanceY > 0) {
@@ -99,7 +99,7 @@ export default class Enemy extends Entity {
           );
           comparableEntities.index == -1 && comparableMap.tileType !== 'tileW'
             ? this.move(enemyEntity, 0, 1)
-            : console.log('going bottom must attack');
+            : this.attack(comparableEntities);
         } else {
           // npc goes upper
           const comparableEntities = this.findObjFromArrByCoordinates(
@@ -114,7 +114,7 @@ export default class Enemy extends Entity {
           );
           comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
             ? this.move(enemyEntity, 0, -1)
-            : console.log('going top must attack');
+            : this.attack(comparableEntities);
         }
       }
 
@@ -138,5 +138,31 @@ export default class Enemy extends Entity {
     entityElem.style = `left: ${currentEntity.tileX * 50}px; top: ${currentEntity.tileY * 50}px`;
 
     this.game.entities[currentEntity.index] = currentEntity;
+  }
+
+  attack(characterToBeat) {
+    if (characterToBeat !== -1 && characterToBeat.tileType == 'tileP') {
+      // damaging according this npc atc
+      this.game.entities[characterToBeat.index].hp = characterToBeat.hp - this.atc;
+      const actualCharacter = this.game.entities[characterToBeat.index];
+
+      // rerender enemy
+      let characterElem = document.getElementById(`${characterToBeat.tileType}`);
+      let parentCharacter = characterElem.parentNode;
+
+      // updHp
+      let hpBarElem = characterElem.childNodes[0];
+      characterElem.removeChild(hpBarElem);
+      let newHpBarElem = document.createElement('span');
+      newHpBarElem.textContent = actualCharacter.hp;
+      newHpBarElem.className = 'health';
+      characterElem.prepend(newHpBarElem);
+
+      if (actualCharacter.hp <= 0) {
+        parentCharacter.removeChild(characterElem);
+        const newEntities = this.deleteObjFromArrById(this.game.entities, characterToBeat.id);
+        this.game.entities = [...newEntities];
+      }
+    }
   }
 }
