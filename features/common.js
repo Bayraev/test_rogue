@@ -14,6 +14,15 @@ export class Functions {
       index,
     };
   }
+  findObjFromArrById(arr, id) {
+    // you must remember coordinates are always must be like tileX and tileY keys
+    const obj = arr.find((obj) => obj.id == id);
+    const index = arr.findIndex((obj) => obj.id == id);
+    return {
+      ...obj,
+      index,
+    };
+  }
   randomCoordinatesForRoads(xy, count) {
     // xy here is vector (x or y)
     let arr = [];
