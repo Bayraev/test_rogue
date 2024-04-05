@@ -175,6 +175,11 @@ export default class Enemy extends Entity {
         parentCharacter.removeChild(characterElem);
         const newEntities = this.deleteObjFromArrById(this.game.entities, characterToBeat.id);
         this.game.entities = [...newEntities];
+        // restart
+        setTimeout(() => {
+          alert('You died..');
+          location.reload();
+        }, 100);
       }
     }
   }
