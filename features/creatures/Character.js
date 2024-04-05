@@ -169,8 +169,6 @@ export default class Character extends Entity {
         // This stuff becomes elem soon (check comment about recursy right above..)
         let newStuff = this.createElem('img', 'stuff', `${tile.tileType}${tile.index}`);
         newStuff.src = tile.src;
-        console.log(newStuff);
-
         inventoryElem.append(newStuff);
 
         // (..) recursy with inventory iteraction
@@ -179,13 +177,13 @@ export default class Character extends Entity {
         break;
 
       case 'use':
-        // delete it from dom
+        // delete it from dom inventory
         inventoryElem.removeChild(elem);
 
         if (tile.tileType == 'tileHP') {
-          // change data in instance
+          // change data in instance according entities arr
           const heroFomEntitiesArr = this.findObjFromArrById(this.game.entities, this.id);
-          this.hp = this.hp + 5;
+          this.hp = heroFomEntitiesArr.hp + 5;
           this.game.entities[heroFomEntitiesArr.index].hp = this.hp;
 
           // player hp from bar
@@ -205,8 +203,10 @@ export default class Character extends Entity {
           parentInventoryData.append(newHpInventoryElem);
         }
         if (tile.tileType == 'tileSW') {
-          // change data in instance
-          this.atc = this.atc + 2;
+          // change data in instance according entities arr
+          const heroFomEntitiesArr = this.findObjFromArrById(this.game.entities, this.id);
+          this.atc = heroFomEntitiesArr.atc + 2;
+          this.game.entities[heroFomEntitiesArr.index].atc = this.atc;
 
           // player atc from inventory
           let atcInventoryElem = document.querySelector('.atcInventory');

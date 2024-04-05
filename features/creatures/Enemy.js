@@ -49,11 +49,8 @@ export default class Enemy extends Entity {
       let distaceX = hero.tileX - enemyEntity.tileX;
       let distanceY = hero.tileY - enemyEntity.tileY;
 
-      // according absolutes of distace, execute .move()
-      if (Math.abs(distaceX) > Math.abs(distanceY)) {
-        if (distaceX > 0) {
-          // X
-          // npc going right way
+      const handleDecisionOfMove = (direction) => {
+        if (direction == 'right') {
           const comparableEntities = this.findObjFromArrByCoordinates(
             this.game.entities,
             enemyEntity.tileX + 1,
@@ -67,6 +64,15 @@ export default class Enemy extends Entity {
           comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
             ? this.move(enemyEntity, 1, 0)
             : this.attack(comparableEntities);
+        }
+      };
+
+      // according absolutes of distace, execute .move()
+      if (Math.abs(distaceX) > Math.abs(distanceY)) {
+        if (distaceX > 0) {
+          // X
+          // npc going right way
+          handleDecisionOfMove('right');
         } else {
           // Y
           // npc going left
@@ -162,7 +168,7 @@ export default class Enemy extends Entity {
       let parentInventoryData = hpInventoryElem.parentNode;
       parentInventoryData.removeChild(hpInventoryElem);
 
-      let newHpInventoryElem = this.createElem('span', 'hpinventory', null, actualCharacter.hp);
+      let newHpInventoryElem = this.createElem('span', 'hpInventory', null, actualCharacter.hp);
       parentInventoryData.append(newHpInventoryElem);
 
       if (actualCharacter.hp <= 0) {

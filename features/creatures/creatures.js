@@ -1,4 +1,3 @@
-import { Game } from '../../index.js';
 import { Functions } from '../common.js';
 
 export class Entity extends Functions {

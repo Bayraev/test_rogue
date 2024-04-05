@@ -110,7 +110,7 @@ export class Functions {
   }
 
   // NEXT DOM
-  createElem(tag, className, id, textContent, src) {
+  createElem(tag, className, id, textContent) {
     let elem = document.createElement(tag);
     className ? (elem.className = className) : null;
     id ? (elem.id = id) : null;
