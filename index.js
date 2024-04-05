@@ -50,11 +50,7 @@ class ProceduralGeneration extends Game {
     field.innerHTML = '';
 
     this.game.map.forEach((tile, index) => {
-      let newTile = document.createElement('div');
-      // choose type of tile
-      newTile.className = tile.tileType;
-      // giving it stuff like key
-      newTile.id = tile.tileType + index;
+      let newTile = this.createElem('div', tile.tileType, tile.tileType + index);
       // UI control of postition of map-tiles
       newTile.style = `left: ${tile.tileX * 50}px; top: ${tile.tileY * 50}px;`;
 

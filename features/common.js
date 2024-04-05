@@ -108,4 +108,14 @@ export class Functions {
     const newArr = entitiesMap.filter((entity) => entity.id !== id);
     return newArr;
   }
+
+  // NEXT DOM
+  createElem(tag, className, id, textContent, src) {
+    let elem = document.createElement(tag);
+    className ? (elem.className = className) : null;
+    id ? (elem.id = id) : null;
+    textContent ? (elem.textContent = textContent) : null;
+
+    return elem;
+  }
 }

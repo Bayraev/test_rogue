@@ -122,16 +122,11 @@ export default class Character extends Entity {
           this.game.map[newCooordinatesMap.index].tileType = 'tile';
 
           // replace it with new tile
-          let newTileHp = document.createElement('div');
-          // choose type of tile
-          newTileHp.className = 'tile';
-          // giving it stuff like key
-          newTileHp.id = 'tileHP' + newCooordinatesMap.index;
+          let newTileHp = this.createElem('div', 'tile', 'tileHp' + newCooordinatesMap.index);
           // UI control of postition of map-tiles
           newTileHp.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
             newCooordinatesMap.tileY * 50
           }px;`;
-
           field.append(newTileHp);
 
           this.interactInventory('add', newCooordinatesMap);
@@ -149,11 +144,7 @@ export default class Character extends Entity {
           this.game.map[newCooordinatesMap.index].tileType = 'tile';
 
           // replace it with new tile
-          let newTileSword = document.createElement('div');
-          // choose type of tile
-          newTileSword.className = 'tile';
-          // giving it stuff like key
-          newTileSword.id = 'tileHP' + newCooordinatesMap.index;
+          let newTileSword = this.createElem('div', 'tile', 'tileSW' + newCooordinatesMap.index);
           // UI control of postition of map-tiles
           newTileSword.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
             newCooordinatesMap.tileY * 50
@@ -176,10 +167,9 @@ export default class Character extends Entity {
     switch (action) {
       case 'add':
         // This stuff becomes elem soon (check comment about recursy right above..)
-        let newStuff = document.createElement('img');
-        newStuff.className = 'stuff';
-        newStuff.id = `${tile.tileType}${tile.index}`;
+        let newStuff = this.createElem('img', 'stuff', `${tile.tileType}${tile.index}`);
         newStuff.src = tile.src;
+        console.log(newStuff);
 
         inventoryElem.append(newStuff);
 
@@ -203,9 +193,7 @@ export default class Character extends Entity {
           let hpBarElem = charElem.childNodes[0];
           charElem.removeChild(hpBarElem);
 
-          let newHpBarElem = document.createElement('span');
-          newHpBarElem.textContent = this.hp;
-          newHpBarElem.className = 'health';
+          let newHpBarElem = this.createElem('span', 'health', null, this.hp);
           charElem.prepend(newHpBarElem);
 
           // player hp from inventory
@@ -213,9 +201,7 @@ export default class Character extends Entity {
           let parentInventoryData = hpInventoryElem.parentNode;
           parentInventoryData.removeChild(hpInventoryElem);
 
-          let newHpInventoryElem = document.createElement('span');
-          newHpInventoryElem.className = 'hpInventory';
-          newHpInventoryElem.textContent = this.hp;
+          let newHpInventoryElem = this.createElem('span', 'hpInventory', null, this.hp);
           parentInventoryData.append(newHpInventoryElem);
         }
         if (tile.tileType == 'tileSW') {
@@ -227,9 +213,7 @@ export default class Character extends Entity {
           let parentInventoryData = atcInventoryElem.parentNode;
           parentInventoryData.removeChild(atcInventoryElem);
 
-          let newAtcInventoryElem = document.createElement('span');
-          newAtcInventoryElem.className = 'atcInventory';
-          newAtcInventoryElem.textContent = this.atc;
+          let newAtcInventoryElem = this.createElem('span', 'atcInventory', null, this.atc);
           parentInventoryData.append(newAtcInventoryElem);
         }
 
@@ -255,9 +239,7 @@ export default class Character extends Entity {
         let hpBarElem = entityElem.childNodes[0];
         entityElem.removeChild(hpBarElem);
 
-        let newHpBarElem = document.createElement('span');
-        newHpBarElem.textContent = actualEnemy.hp;
-        newHpBarElem.className = 'health';
+        let newHpBarElem = this.createElem('span', 'health', null, actualEnemy.hp);
         entityElem.prepend(newHpBarElem);
 
         if (actualEnemy.hp <= 0) {

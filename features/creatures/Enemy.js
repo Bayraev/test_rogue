@@ -153,9 +153,8 @@ export default class Enemy extends Entity {
       // updHp
       let hpBarElem = characterElem.childNodes[0];
       characterElem.removeChild(hpBarElem);
-      let newHpBarElem = document.createElement('span');
-      newHpBarElem.textContent = actualCharacter.hp;
-      newHpBarElem.className = 'health';
+
+      let newHpBarElem = this.createElem('span', 'health', null, actualCharacter.hp);
       characterElem.prepend(newHpBarElem);
 
       // upd player hp from inventory
@@ -163,9 +162,7 @@ export default class Enemy extends Entity {
       let parentInventoryData = hpInventoryElem.parentNode;
       parentInventoryData.removeChild(hpInventoryElem);
 
-      let newHpInventoryElem = document.createElement('span');
-      newHpInventoryElem.className = 'hpInventory';
-      newHpInventoryElem.textContent = actualCharacter.hp;
+      let newHpInventoryElem = this.createElem('span', 'hpinventory', null, actualCharacter.hp);
       parentInventoryData.append(newHpInventoryElem);
 
       if (actualCharacter.hp <= 0) {
