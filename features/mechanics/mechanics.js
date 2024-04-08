@@ -1,4 +1,4 @@
-export class mechanics {
+export class heroMechanics {
   // hero mechanics
   static heroEntityInfoAndSpawn(data) {
     const { game, hero } = data;

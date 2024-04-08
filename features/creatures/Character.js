@@ -1,4 +1,4 @@
-import { mechanics } from '../mechanics/mechanics.js';
+import { heroMechanics } from '../mechanics/mechanics.js';
 import { Entity } from './creatures.js';
 
 export default class Character extends Entity {
@@ -18,9 +18,9 @@ export default class Character extends Entity {
       hero: this,
       entityInfo: this.entityInfo,
     };
-    mechanics.heroEntityInfoAndSpawn(spawnData);
+    heroMechanics.heroEntityInfoAndSpawn(spawnData);
     // keyboard
-    mechanics.heroInitKeyboard(this);
+    heroMechanics.heroInitKeyboard(this);
   }
 
   move(direction) {
@@ -62,7 +62,7 @@ export default class Character extends Entity {
     };
 
     if (newCooordinatesEntities.index == -1) {
-      mechanics.heroMove(data);
+      heroMechanics.heroMove(data);
     }
   }
 
@@ -77,7 +77,7 @@ export default class Character extends Entity {
           hero: this,
           game: this.game,
         };
-        mechanics.heroAddToInventory(addData);
+        heroMechanics.heroAddToInventory(addData);
         break;
 
       case 'use':
@@ -88,7 +88,7 @@ export default class Character extends Entity {
           game: this.game,
           hero: this,
         };
-        mechanics.heroUseFromInventory(useData);
+        heroMechanics.heroUseFromInventory(useData);
         break;
 
       default:
@@ -105,6 +105,6 @@ export default class Character extends Entity {
       hero: this,
     };
     // calling service of attack
-    mechanics.heroAttack(data);
+    heroMechanics.heroAttack(data);
   }
 }
