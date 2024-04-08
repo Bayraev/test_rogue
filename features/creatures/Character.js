@@ -164,60 +164,26 @@ export default class Character extends Entity {
   interactInventory(action, tile, elem) {
     // function for add and use stuff
     let inventoryElem = document.querySelector('.inventory');
-
     switch (action) {
       case 'add':
-        // This stuff becomes elem soon (check comment about recursy right above..)
-        let newStuff = this.createElem('img', 'stuff', `${tile.tileType}${tile.index}`);
-        newStuff.src = tile.src;
-        inventoryElem.append(newStuff);
-
-        // (..) recursy with inventory iteraction
-        newStuff.addEventListener('click', () => this.interactInventory('use', tile, newStuff));
-
+        const addData = {
+          inventoryElem,
+          tile,
+          hero: this,
+          game: this.game,
+        };
+        mechanics.heroAddToInventory(addData);
         break;
 
       case 'use':
         // delete it from dom inventory
         inventoryElem.removeChild(elem);
-
-        if (tile.tileType == 'tileHP') {
-          // change data in instance according entities arr
-          const heroFomEntitiesArr = this.findObjFromArrById(this.game.entities, this.id);
-          this.hp = heroFomEntitiesArr.hp + 5;
-          this.game.entities[heroFomEntitiesArr.index].hp = this.hp;
-
-          // player hp from bar
-          let charElem = document.querySelector('.tileP');
-          let hpBarElem = charElem.childNodes[0];
-          charElem.removeChild(hpBarElem);
-
-          let newHpBarElem = this.createElem('span', 'health', null, this.hp);
-          charElem.prepend(newHpBarElem);
-
-          // player hp from inventory
-          let hpInventoryElem = document.querySelector('.hpInventory');
-          let parentInventoryData = hpInventoryElem.parentNode;
-          parentInventoryData.removeChild(hpInventoryElem);
-
-          let newHpInventoryElem = this.createElem('span', 'hpInventory', null, this.hp);
-          parentInventoryData.append(newHpInventoryElem);
-        }
-        if (tile.tileType == 'tileSW') {
-          // change data in instance according entities arr
-          const heroFomEntitiesArr = this.findObjFromArrById(this.game.entities, this.id);
-          this.atc = heroFomEntitiesArr.atc + 2;
-          this.game.entities[heroFomEntitiesArr.index].atc = this.atc;
-
-          // player atc from inventory
-          let atcInventoryElem = document.querySelector('.atcInventory');
-          let parentInventoryData = atcInventoryElem.parentNode;
-          parentInventoryData.removeChild(atcInventoryElem);
-
-          let newAtcInventoryElem = this.createElem('span', 'atcInventory', null, this.atc);
-          parentInventoryData.append(newAtcInventoryElem);
-        }
-
+        const useData = {
+          tile,
+          game: this.game,
+          hero: this,
+        };
+        mechanics.heroUseFromInventory(useData);
         break;
 
       default:
@@ -234,6 +200,6 @@ export default class Character extends Entity {
       hero: this,
     };
     // calling service of attack
-    mechanics.attackByHero(data);
+    mechanics.heroAttack(data);
   }
 }
