@@ -1,3 +1,4 @@
+import { mechanics } from '../mechanics/mechanics.js';
 import { Entity } from './creatures.js';
 
 export default class Character extends Entity {
@@ -226,28 +227,13 @@ export default class Character extends Entity {
 
   attack() {
     let enemiesAround = this.entityAround(this.game.entities, this.coordinates);
-
-    enemiesAround.forEach((enemy) => {
-      if (enemy.index !== -1) {
-        // damage according hero atc
-        this.game.entities[enemy.index].hp = enemy.hp - this.atc;
-        const actualEnemy = this.game.entities[enemy.index];
-        // rerender enemy
-        let entityElem = document.getElementById(`${enemy.tileType + enemy.id}`);
-        let parentEntity = entityElem.parentNode;
-        // upd hp
-        let hpBarElem = entityElem.childNodes[0];
-        entityElem.removeChild(hpBarElem);
-
-        let newHpBarElem = this.createElem('span', 'health', null, actualEnemy.hp);
-        entityElem.prepend(newHpBarElem);
-
-        if (actualEnemy.hp <= 0) {
-          parentEntity.removeChild(entityElem);
-          const newEntites = this.deleteObjFromArrById(this.game.entities, enemy.id);
-          this.game.entities = [...newEntites];
-        }
-      }
-    });
+    // prepare data to change and use
+    const data = {
+      enemiesAround,
+      game: this.game,
+      hero: this,
+    };
+    // calling service of attack
+    mechanics.attackByHero(data);
   }
 }
