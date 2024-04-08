@@ -19,8 +19,6 @@ export default class Character extends Entity {
       entityInfo: this.entityInfo,
     };
     mechanics.heroEntityInfoAndSpawn(spawnData);
-    // spawn
-    // this.spawnEntity(this.entityInfo, this.game.entities);
 
     // keyboard
     const self = this;
