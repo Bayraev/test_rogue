@@ -1,4 +1,5 @@
 import { heroMechanics } from '../mechanics/mechanics.js';
+import { commonMechanics } from '../mechanics/mechanics.js';
 import { Entity } from './creatures.js';
 
 export default class Character extends Entity {
@@ -18,7 +19,7 @@ export default class Character extends Entity {
       hero: this,
       entityInfo: this.entityInfo,
     };
-    heroMechanics.heroEntityInfoAndSpawn(spawnData);
+    commonMechanics.entityInfoAndSpawn(spawnData);
     // keyboard
     heroMechanics.heroInitKeyboard(this);
   }

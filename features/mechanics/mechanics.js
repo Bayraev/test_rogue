@@ -1,6 +1,6 @@
-export class heroMechanics {
+export class commonMechanics {
   // hero mechanics
-  static heroEntityInfoAndSpawn(data) {
+  static entityInfoAndSpawn(data) {
     const { game, hero } = data;
 
     // Information for spawn and for entity arr
@@ -29,7 +29,9 @@ export class heroMechanics {
     // spawn
     hero.spawnEntity(hero.entityInfo, game.entities);
   }
+}
 
+export class heroMechanics {
   static heroInitKeyboard(self) {
     const handleKeyboard = (event) => {
       // Check if the pressed key is 'W', 'A', 'S', or 'D'
@@ -199,3 +201,5 @@ export class heroMechanics {
     });
   }
 }
+
+export class enemyMechanics {}
