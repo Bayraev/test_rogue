@@ -30,6 +30,24 @@ export class mechanics {
     hero.spawnEntity(hero.entityInfo, game.entities);
   }
 
+  static heroInitKeyboard(self) {
+    const handleKeyboard = (event) => {
+      // Check if the pressed key is 'W', 'A', 'S', or 'D'
+      if (event.key === 'w' || event.key === 'W' || event.key === 'ц' || event.key === 'Ц') {
+        self.move('top');
+      } else if (event.key === 'a' || event.key === 'A' || event.key === 'ф' || event.key === 'Ф') {
+        self.move('left');
+      } else if (event.key === 's' || event.key === 'S' || event.key === 'ы' || event.key === 'Ы') {
+        self.move('bottom');
+      } else if (event.key === 'd' || event.key === 'D' || event.key === 'в' || event.key === 'В') {
+        self.move('right');
+      } else if (event.key === 'j' || event.key === 'J' || event.key === 'о' || event.key === 'О') {
+        self.attack();
+      }
+    };
+    document.addEventListener('keydown', (event) => handleKeyboard(event));
+  }
+
   static heroMove(data) {
     const { game, hero, field, newX, newY, newCooordinatesMap } = data;
 
