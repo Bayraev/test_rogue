@@ -137,6 +137,7 @@ export class heroMechanics {
     // (..) recursy with inventory iteraction
     newStuff.addEventListener('click', () => hero.interactInventory('use', tile, newStuff));
   }
+
   static heroUseFromInventory(data) {
     const { game, hero, tile } = data;
     if (tile.tileType == 'tileHP') {
@@ -202,4 +203,160 @@ export class heroMechanics {
   }
 }
 
-export class enemyMechanics {}
+export class enemyMechanics {
+  static enemyRecursiveMoveLogic(data) {
+    const { game, entity, id } = data;
+
+    const enemyEntity = game.findObjFromArrById(game.entities, id);
+    const hero = game.findObjFromArrById(game.entities, 'tileP');
+
+    // calculate distances between hero and enemy
+    let distaceX = hero.tileX - enemyEntity.tileX;
+    let distanceY = hero.tileY - enemyEntity.tileY;
+
+    const handleDecisionOfMove = (direction) => {
+      if (direction == 'right') {
+        const comparableEntities = game.findObjFromArrByCoordinates(
+          game.entities,
+          enemyEntity.tileX + 1,
+          enemyEntity.tileY,
+        );
+        const comparableMap = game.findObjFromArrByCoordinates(
+          game.map,
+          enemyEntity.tileX + 1,
+          enemyEntity.tileY,
+        );
+        comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
+          ? entity.move(enemyEntity, 1, 0)
+          : entity.attack(comparableEntities);
+      }
+
+      if (direction == 'left') {
+        const comparableEntities = game.findObjFromArrByCoordinates(
+          game.entities,
+          enemyEntity.tileX - 1,
+          enemyEntity.tileY,
+        );
+        const comparableMap = game.findObjFromArrByCoordinates(
+          game.map,
+          enemyEntity.tileX - 1,
+          enemyEntity.tileY,
+        );
+        comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
+          ? entity.move(enemyEntity, -1, 0)
+          : entity.attack(comparableEntities);
+      }
+
+      if (direction == 'bottom') {
+        const comparableEntities = game.findObjFromArrByCoordinates(
+          game.entities,
+          enemyEntity.tileX,
+          enemyEntity.tileY + 1,
+        );
+        const comparableMap = game.findObjFromArrByCoordinates(
+          game.map,
+          enemyEntity.tileX,
+          enemyEntity.tileY + 1,
+        );
+        comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
+          ? entity.move(enemyEntity, 0, 1)
+          : entity.attack(comparableEntities);
+      }
+
+      if (direction == 'up') {
+        const comparableEntities = game.findObjFromArrByCoordinates(
+          game.entities,
+          enemyEntity.tileX,
+          enemyEntity.tileY - 1,
+        );
+        const comparableMap = game.findObjFromArrByCoordinates(
+          game.map,
+          enemyEntity.tileX,
+          enemyEntity.tileY - 1,
+        );
+        comparableEntities.index == -1 && comparableMap.tileType != 'tileW'
+          ? entity.move(enemyEntity, 0, -1)
+          : entity.attack(comparableEntities);
+      }
+    };
+
+    // according absolutes of distace, execute .move()
+    if (Math.abs(distaceX) > Math.abs(distanceY)) {
+      if (distaceX > 0) {
+        // npc going right way
+        handleDecisionOfMove('right');
+      } else {
+        // npc going left
+        handleDecisionOfMove('left');
+      }
+    } else {
+      if (distanceY > 0) {
+        // npc goes bottom
+        handleDecisionOfMove('bottom');
+      } else {
+        // npc goes upper
+        handleDecisionOfMove('up');
+      }
+    }
+
+    setTimeout(() => {
+      this.enemyRecursiveMoveLogic(data);
+    }, 500);
+  }
+
+  static enemyMove(data) {
+    const { entity, distaceX, distanceY, game } = data;
+
+    const currentEntity = {
+      ...entity,
+      tileX: entity.tileX + distaceX,
+      tileY: entity.tileY + distanceY,
+    };
+    const entityElem = document.getElementById(`${currentEntity.tileType}${currentEntity.id}`);
+
+    entityElem.className = currentEntity.tileType;
+    entityElem.style = `left: ${currentEntity.tileX * 50}px; top: ${currentEntity.tileY * 50}px`;
+
+    game.entities[currentEntity.index] = currentEntity;
+  }
+
+  static enemyAttack(data) {
+    const { characterToBeat, game, enemy } = data;
+
+    if (characterToBeat !== -1 && characterToBeat.tileType == 'tileP') {
+      // damaging according this npc atc
+      game.entities[characterToBeat.index].hp = characterToBeat.hp - enemy.atc;
+      const actualCharacter = game.entities[characterToBeat.index];
+
+      // rerender enemy
+      let characterElem = document.getElementById(`${characterToBeat.tileType}`);
+      let parentCharacter = characterElem.parentNode;
+
+      // updHp
+      let hpBarElem = characterElem.childNodes[0];
+      characterElem.removeChild(hpBarElem);
+
+      let newHpBarElem = game.createElem('span', 'health', null, actualCharacter.hp);
+      characterElem.prepend(newHpBarElem);
+
+      // upd player hp from inventory
+      let hpInventoryElem = document.querySelector('.hpInventory');
+      let parentInventoryData = hpInventoryElem.parentNode;
+      parentInventoryData.removeChild(hpInventoryElem);
+
+      let newHpInventoryElem = game.createElem('span', 'hpInventory', null, actualCharacter.hp);
+      parentInventoryData.append(newHpInventoryElem);
+
+      if (actualCharacter.hp <= 0) {
+        parentCharacter.removeChild(characterElem);
+        const newEntities = game.deleteObjFromArrById(game.entities, characterToBeat.id);
+        game.entities = [...newEntities];
+        // restart
+        setTimeout(() => {
+          alert('You died..');
+          location.reload();
+        }, 100);
+      }
+    }
+  }
+}
