@@ -16,7 +16,7 @@ export default class Character extends Entity {
     // define entityInfo then spawn entity (also in game.entities map)
     const spawnData = {
       game: this.game,
-      hero: this,
+      entity: this,
       entityInfo: this.entityInfo,
     };
     commonMechanics.entityInfoAndSpawn(spawnData);

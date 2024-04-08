@@ -1,33 +1,33 @@
 export class commonMechanics {
   // hero mechanics
   static entityInfoAndSpawn(data) {
-    const { game, hero } = data;
+    const { game, entity } = data;
 
     // Information for spawn and for entity arr
-    hero.entityInfo = game.randomCoordinatesOnEmptyTile(
+    entity.entityInfo = game.randomCoordinatesOnEmptyTile(
       game.map,
       1,
-      hero.tileType,
+      entity.tileType,
       game.maxX,
       game.maxY,
     )[0];
-    hero.entityInfo = {
-      ...hero.entityInfo,
+    entity.entityInfo = {
+      ...entity.entityInfo,
       maxX: game.maxX,
       maxY: game.maxY,
-      hp: hero.hp,
-      atc: hero.atc,
-      tileType: hero.tileType,
-      id: hero.id,
+      hp: entity.hp,
+      atc: entity.atc,
+      tileType: entity.tileType,
+      id: entity.id,
     };
 
-    hero.coordinates = {
-      x: hero.entityInfo.tileX,
-      y: hero.entityInfo.tileY,
+    entity.coordinates = {
+      x: entity.entityInfo.tileX,
+      y: entity.entityInfo.tileY,
     };
 
     // spawn
-    hero.spawnEntity(hero.entityInfo, game.entities);
+    entity.spawnEntity(entity.entityInfo, game.entities);
   }
 }
 
