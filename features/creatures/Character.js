@@ -12,30 +12,15 @@ export default class Character extends Entity {
     this.id = 'tileP';
   }
   init() {
-    // Information for spawn and for entity arr
-    this.entityInfo = this.randomCoordinatesOnEmptyTile(
-      this.game.map,
-      1,
-      this.tileType,
-      this.game.maxX,
-      this.game.maxY,
-    )[0];
-    this.entityInfo = {
-      ...this.entityInfo,
-      maxX: this.game.maxX,
-      maxY: this.game.maxY,
-      hp: this.hp,
-      atc: this.atc,
-      tileType: this.tileType,
-      id: this.id,
+    // define entityInfo then spawn entity (also in game.entities map)
+    const spawnData = {
+      game: this.game,
+      hero: this,
+      entityInfo: this.entityInfo,
     };
-
-    this.coordinates = {
-      x: this.entityInfo.tileX,
-      y: this.entityInfo.tileY,
-    };
+    mechanics.heroEntityInfoAndSpawn(spawnData);
     // spawn
-    this.spawnEntity(this.entityInfo, this.game.entities);
+    // this.spawnEntity(this.entityInfo, this.game.entities);
 
     // keyboard
     const self = this;

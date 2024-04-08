@@ -1,8 +1,39 @@
 export class mechanics {
   // hero mechanics
+  static heroEntityInfoAndSpawn(data) {
+    const { game, hero } = data;
+
+    // Information for spawn and for entity arr
+    hero.entityInfo = game.randomCoordinatesOnEmptyTile(
+      game.map,
+      1,
+      hero.tileType,
+      game.maxX,
+      game.maxY,
+    )[0];
+    hero.entityInfo = {
+      ...hero.entityInfo,
+      maxX: game.maxX,
+      maxY: game.maxY,
+      hp: hero.hp,
+      atc: hero.atc,
+      tileType: hero.tileType,
+      id: hero.id,
+    };
+
+    hero.coordinates = {
+      x: hero.entityInfo.tileX,
+      y: hero.entityInfo.tileY,
+    };
+
+    // spawn
+    hero.spawnEntity(hero.entityInfo, game.entities);
+  }
+
   static heroMove(data) {
     const { game, hero, field, newX, newY, newCooordinatesMap } = data;
 
+    // moving
     switch (newCooordinatesMap.tileType) {
       case 'tile':
         const entityElem = document.querySelector('.tileP');
@@ -118,7 +149,7 @@ export class mechanics {
       let atcInventoryElem = document.querySelector('.atcInventory');
       let parentInventoryData = atcInventoryElem.parentNode;
       parentInventoryData.removeChild(atcInventoryElem);
-      let newAtcInventoryElem = this.createElem('span', 'atcInventory', null, hero.atc);
+      let newAtcInventoryElem = game.createElem('span', 'atcInventory', null, hero.atc);
       parentInventoryData.append(newAtcInventoryElem);
     }
   }
