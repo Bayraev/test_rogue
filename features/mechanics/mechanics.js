@@ -1,5 +1,81 @@
 export class mechanics {
   // hero mechanics
+  static heroMove(data) {
+    const { game, hero, field, newX, newY, newCooordinatesMap } = data;
+
+    switch (newCooordinatesMap.tileType) {
+      case 'tile':
+        const entityElem = document.querySelector('.tileP');
+        hero.coordinates.x = newX;
+        hero.coordinates.y = newY;
+
+        // change info in entities arr for hero
+        const char = game.findObjFromArrById(game.entities, 'tileP');
+        game.entities[char.index] = {
+          ...char,
+          tileX: hero.coordinates.x,
+          tileY: hero.coordinates.y,
+        };
+
+        entityElem.style = `left: ${hero.coordinates.x * 50}px; top: ${hero.coordinates.y * 50}px;`;
+
+        game.autoScrollToEntity(
+          field,
+          { ...hero.entityInfo, tileX: hero.coordinates.x, tileY: hero.coordinates.y },
+          hero.entityInfo.maxX,
+          hero.entityInfo.maxY,
+        );
+        break;
+
+      case 'tileHP':
+        // old elem with HP
+        const selectedHpElem = document.getElementById(
+          `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
+        );
+        const parentHp = selectedHpElem.parentNode;
+        parentHp.removeChild(selectedHpElem);
+
+        // change pre-render map (but dont call render, cuz it finds by id above and change)
+        game.map[newCooordinatesMap.index].tileType = 'tile';
+
+        // replace it with new tile
+        let newTileHp = game.createElem('div', 'tile', 'tileHp' + newCooordinatesMap.index);
+        // UI control of postition of map-tiles
+        newTileHp.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
+          newCooordinatesMap.tileY * 50
+        }px;`;
+        field.append(newTileHp);
+
+        hero.interactInventory('add', newCooordinatesMap);
+        break;
+
+      case 'tileSW':
+        // old elem with HP
+        const selectedSwordElem = document.getElementById(
+          `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
+        );
+        const parentSword = selectedSwordElem.parentNode;
+        parentSword.removeChild(selectedSwordElem);
+
+        // change pre-render map (but dont call render, cuz it finds by id above and change)
+        game.map[newCooordinatesMap.index].tileType = 'tile';
+
+        // replace it with new tile
+        let newTileSword = game.createElem('div', 'tile', 'tileSW' + newCooordinatesMap.index);
+        // UI control of postition of map-tiles
+        newTileSword.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
+          newCooordinatesMap.tileY * 50
+        }px;`;
+        field.append(newTileSword);
+
+        hero.interactInventory('add', newCooordinatesMap);
+        break;
+
+      default:
+        break;
+    }
+  }
+
   static heroAddToInventory(data) {
     const { game, hero, tile, inventoryElem } = data;
     // This stuff becomes elem soon (check comment about recursy right above..)
@@ -10,7 +86,6 @@ export class mechanics {
     // (..) recursy with inventory iteraction
     newStuff.addEventListener('click', () => hero.interactInventory('use', tile, newStuff));
   }
-
   static heroUseFromInventory(data) {
     const { game, hero, tile } = data;
     if (tile.tileType == 'tileHP') {

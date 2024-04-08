@@ -62,7 +62,7 @@ export default class Character extends Entity {
     // defining new coordinate
     let newX = this.coordinates.x;
     let newY = this.coordinates.y;
-
+    // describe new coordinates according direction
     switch (direction) {
       case 'top':
         newY--;
@@ -84,80 +84,18 @@ export default class Character extends Entity {
     let newCooordinatesMap = this.findObjFromArrByCoordinates(this.game.map, newX, newY);
     let newCooordinatesEntities = this.findObjFromArrByCoordinates(this.game.entities, newX, newY);
 
+    const data = {
+      field,
+      newX,
+      newY,
+      newCooordinatesMap,
+      newCooordinatesEntities,
+      game: this.game,
+      hero: this,
+    };
+
     if (newCooordinatesEntities.index == -1) {
-      switch (newCooordinatesMap.tileType) {
-        case 'tile':
-          const entityElem = document.querySelector('.tileP');
-          this.coordinates.x = newX;
-          this.coordinates.y = newY;
-
-          // change info in entities arr for hero
-          const hero = this.findObjFromArrById(this.game.entities, 'tileP');
-          this.game.entities[hero.index] = {
-            ...hero,
-            tileX: this.coordinates.x,
-            tileY: this.coordinates.y,
-          };
-
-          entityElem.style = `left: ${this.coordinates.x * 50}px; top: ${
-            this.coordinates.y * 50
-          }px;`;
-
-          this.autoScrollToEntity(
-            field,
-            { ...this.entityInfo, tileX: this.coordinates.x, tileY: this.coordinates.y },
-            this.entityInfo.maxX,
-            this.entityInfo.maxY,
-          );
-          break;
-
-        case 'tileHP':
-          // old elem with HP
-          const selectedHpElem = document.getElementById(
-            `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
-          );
-          const parentHp = selectedHpElem.parentNode;
-          parentHp.removeChild(selectedHpElem);
-
-          // change pre-render map (but dont call render, cuz it finds by id above and change)
-          this.game.map[newCooordinatesMap.index].tileType = 'tile';
-
-          // replace it with new tile
-          let newTileHp = this.createElem('div', 'tile', 'tileHp' + newCooordinatesMap.index);
-          // UI control of postition of map-tiles
-          newTileHp.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
-            newCooordinatesMap.tileY * 50
-          }px;`;
-          field.append(newTileHp);
-
-          this.interactInventory('add', newCooordinatesMap);
-          break;
-
-        case 'tileSW':
-          // old elem with HP
-          const selectedSwordElem = document.getElementById(
-            `${newCooordinatesMap.tileType + newCooordinatesMap.index}`,
-          );
-          const parentSword = selectedSwordElem.parentNode;
-          parentSword.removeChild(selectedSwordElem);
-
-          // change pre-render map (but dont call render, cuz it finds by id above and change)
-          this.game.map[newCooordinatesMap.index].tileType = 'tile';
-
-          // replace it with new tile
-          let newTileSword = this.createElem('div', 'tile', 'tileSW' + newCooordinatesMap.index);
-          // UI control of postition of map-tiles
-          newTileSword.style = `left: ${newCooordinatesMap.tileX * 50}px; top: ${
-            newCooordinatesMap.tileY * 50
-          }px;`;
-          field.append(newTileSword);
-
-          this.interactInventory('add', newCooordinatesMap);
-          break;
-
-        default:
-          break;
-      }
+      mechanics.heroMove(data);
     }
   }
 
